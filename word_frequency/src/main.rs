@@ -16,7 +16,9 @@ fn main() {
         if arg == "-h" || arg == "--help" {
             println!("Usage: wordfreq [OPTIONS] <TEXT>");
             println!("--top <N>        pour montrer le Top X des mots (par defaut 10)");
-            println!("--min-length <N> ignore les mots avec une certaine taille minimum (par defaut 1)");
+            println!(
+                "--min-length <N> ignore les mots avec une certaine taille minimum (par defaut 1)"
+            );
             println!("--ignore-case    pour ignorer les majuscules");
             println!("-h, --help       afficher l'aide");
             return;
@@ -88,5 +90,4 @@ fn main() {
     for (w, c) in words.into_iter().take(top) {
         println!("{w}: {c}");
     }
-
 }

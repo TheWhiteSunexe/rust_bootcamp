@@ -39,7 +39,7 @@ fn parse_offset(s: &str) -> u64 {
 
 // Convertir une chaîne hex en bytes
 fn hex_to_bytes(hex: &str) -> Vec<u8> {
-    if hex.len() % 2 != 0 {
+    if !hex.len().is_multiple_of(2) {
         eprintln!("error");
         process::exit(2);
     }
@@ -48,11 +48,8 @@ fn hex_to_bytes(hex: &str) -> Vec<u8> {
     let chars: Vec<char> = hex.chars().collect();
     let mut i = 0;
     while i < chars.len() {
-        let byte = u8::from_str_radix(
-            &format!("{}{}", chars[i], chars[i + 1]),
-            16,
-        )
-            .unwrap_or_else(|_| {
+        let byte =
+            u8::from_str_radix(&format!("{}{}", chars[i], chars[i + 1]), 16).unwrap_or_else(|_| {
                 eprintln!("error");
                 process::exit(2);
             });
@@ -171,7 +168,7 @@ fn main() {
 
         // Ouvre le fichier (création si inexistant)
         let mut f = OpenOptions::new()
-            .create(true)
+            .truncate(true)
             .write(true)
             .read(true)
             .open(&file_path)
