@@ -1,69 +1,51 @@
+// Exercice 01
+// Author : Tristan Gillet
+
 use std::env;
-use std::process;
-
-fn print_help() {
-    println!(
-        "\
-Usage: rusty_hello [OPTIONS] [NAME]
-
-Arguments:
-  [NAME]  Name to greet [default: World]
-
-Options:
-  --upper       Convert to uppercase
-  --repeat <N>  Repeat greeting N times [default: 1]
-  -h, --help    Print help"
-    );
-}
-
-fn parse_repeat(value: &str) -> usize {
-    value.parse::<usize>().unwrap_or_else(|_| {
-        eprintln!("Error: --repeat expects a positive integer");
-        process::exit(1);
-    })
-}
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
 
-    let mut name = String::from("World");
-    let mut upper = false;
+    let mut name = "World".to_string();
+    let mut caps = false;
     let mut repeat = 1;
 
     let mut i = 0;
     while i < args.len() {
-        match args[i].as_str() {
-            "--help" | "-h" => {
-                print_help();
+        let arg = &args[i];
+
+        if arg == "-h" || arg == "--help" {
+            println!("Usage: rusty_hello [OPTIONS] [NAME]");
+            println!("--upper       mettre en majuscules");
+            println!("--repeat <N>  répéter N fois (par défaut 1)");
+            println!("-h, --help    afficher ce message");
+            return;
+        } else if arg == "--upper" {
+            caps = true;
+        } else if arg == "--repeat" {
+            i += 1;
+            if i >= args.len() {
+                println!("Oups, pas de valeur pour --repeat");
                 return;
             }
-            "--upper" => {
-                upper = true;
-            }
-            "--repeat" => {
-                i += 1;
-                if i >= args.len() {
-                    eprintln!("Error: --repeat requires a value");
-                    process::exit(1);
-                }
-                repeat = parse_repeat(&args[i]);
-            }
-            value => {
-                // Argument positionnel : NAME (une seule fois)
-                name = value.to_string();
-            }
+            repeat = args[i].parse::<usize>().unwrap_or(1);
+        } else if arg.starts_with("--") {
+            println!("Option inconnue: {}", arg);
+            return;
+        } else {
+            // argument positionnel pour le nom
+            name = arg.to_string();
         }
+
         i += 1;
     }
 
-    let greeting = format!("Hello, {}!", name);
-    let output = if upper {
-        greeting.to_uppercase()
-    } else {
-        greeting
-    };
+    let mut message = format!("Hello, {}!", name);
+    if caps {
+        message = message.to_uppercase();
+    }
 
     for _ in 0..repeat {
-        println!("{output}");
+        println!("{}", message);
     }
 }

@@ -49,7 +49,6 @@ fn main() {
                 repeat = parse_repeat(&args[i]);
             }
             value => {
-                // Argument positionnel : NAME (une seule fois)
                 name = value.to_string();
             }
         }
